@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cikkek</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <h1 style="text-align: center;">Cikkek</h1>
+    <h2>Új cikk</h2>
+    <form action="/add-post" method="POST">
+        <div class="post-author-container">
+        <label class="post-author-label" for="userId">Szerző:</label>
+        <select class="post-author-list" name="userId" id="userId" required>
+            <% users.forEach(function(user) { %>
+                <option value="<%= user.id %>">
+                    <%= user.name %> (<%= user.id %>)
+                </option>
+                <% }); %>
+        </select>
+        <button onclick="window.location.href = '/add-user';">Új szerző</button>
+    </div>
+        <input class="post-title" type="text" name="title" placeholder="Cím" required><br>
+        <textarea class="post-text" name="content" placeholder="Tartalom" required></textarea><br>
+        <button type="submit">Cikk mentése</button>
+    </form>
+    <hr>
+    <h2 style="margin-top: 50px;">Cikkek</h2>
+    <div class="post-container">
+        <% posts.forEach(function(post) { %>
+
+
+            <div class="individual-post">
+                <h3>
+                    <%= post.title %>
+                </h3>
+                <small>(Szerző: <%= post.name %>)</small>
+                <p>
+                    <%= post.content %>
+                </p>
+            </div>
+
+            <% }); %>
+
+    </div>
+</body>
+
+</html>

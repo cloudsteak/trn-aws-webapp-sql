@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Szerző kezelés</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+    <div class="author-container">
+    <h1>Új szerző</h1>
+    <form action="/add-user" method="POST">
+        <input class="author-name" type="text" name="name" placeholder="Név" required><br>
+        <button type="submit">Létrehoz</button>
+    </form>
+    <button style="margin-top: 10px;" onclick="window.location.href = '/';">Nyitólap</button>
+</div>
+</body> 
+</html>
