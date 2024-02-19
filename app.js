@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 
         pool.query(postsQuery, (error, posts) => {
             if (error) {
-                return res.status(500).send('Hiba történt acikkek beolvasásakor');
+                return res.status(500).send('Hiba történt a cikkek beolvasásakor');
             }
             res.render('index', { users, posts });
         });
