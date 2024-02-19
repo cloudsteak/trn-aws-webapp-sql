@@ -1,5 +1,18 @@
 # AWS WebApp SQL hozzáféréssel
 
+## Tartalomjegyzék
+
+- [Összetevők](#Összetevők)
+- [SQL adatbázis létrehozása](#SQL-adatbázis-létrehozása)
+- [Kapcsoldás az adatbázishoz](#Kapcsoldás-az-adatbázishoz)
+- [Adatbázis létrehozása](#Adatbázis-létrehozása)
+- [Alkalmazás helyi futtatása](#Alkalmazás-helyi-futtatása)
+- [Alkalmazás futtatása Elastic Beanstalk segítségével](#Alkalmazás-futtatása-Elastic-Beanstalk-segítségével)
+  - [Elastic Beanstalk környezet létrehozása](#Elastic-Beanstalk-környezet-létrehozása)
+  - [Adatbázis hozzáférési paraméterek hozzáadása Elastic Beanstalk környezethez](#Adatbázis-hozzáférési-paraméterek-hozzáadása-Elastic-Beanstalk-környezethez)
+  - [CodePipeline konfigurálása a folyamatos üzembehelyezéshez](#CodePipeline-konfigurálása-a-folyamatos-üzembehelyezéshez)
+  
+
 ## Összetevők
 
 - AWS Elastic Beanstalk
@@ -76,7 +89,7 @@ CREATE TABLE posts (
 
 ```
 # .env file
-DB_USER="admin"
+DB_USER="adatgazda"
 DB_PASSWORD={RDS jelszava}
 DB_SERVER={RDS endpoint}
 DB_NAME="cikkek"
@@ -86,8 +99,9 @@ DB_PORT="3306"
 4. Indítsd el az alkalmazást: `npm start`
 5. Nyisd meg a böngészőt, és látogasd meg a `http://localhost:8080` címet
 
-
 ## Alkalmazás futtatása Elastic Beanstalk segítségével
+
+### Elastic Beanstalk környezet létrehozása
 
 1. Lépjünk be az AWS konzolba
 2. Keresőbe írjuk be az Elastic Beanstalk szolgáltatást
@@ -102,14 +116,60 @@ DB_PORT="3306"
    - Presets: Single instance
 5. Kattintsunk a "Next" gombra
 6. Create and use new service role
-    - Service role name: cikkek-role
+   - Service role name: cikkek-role
 7. EC2 key pair: Create new key pair
-    - Key pair name: cikkek-key
+   - Key pair name: cikkek-key
 8. Kattintsunk a "Next" gombra
 9. Kattintsunk a "Skip to review" gombra
 10. Kattintsunk a "Submit" gombra
 
-Ha létrejött a példa alkalmazás, CodePipeline segítségével töltsd fel a saját alkalmazásodat.
+Ha létrejött a példa alkalmazás, adjuk hozzá az alkalmazás számára szükséges adatbázis hozzásférési paramétereket
+
+### Adatbázis hozzáférési paraméterek hozzáadása Elastic Beanstalk környezethez
+
+1. Lépjünk be az AWS konzolba
+2. Keresőbe írjuk be az Elastic Beanstalk szolgáltatást
+3. Kattintsunk a "cikkek-env" környezetre
+4. A bal oldali menüben kattintsunk a "Configuration" menüpontra
+5. "Updates, monitoring, and logging" részben kattintsunk a "Edit" gombra
+6. Keressük meg az "Environment properties" részt és kattintsunk az "Add environment property" gombra
+7. Adjuk hozzá a következő környezeti változókat
+
+| Név         | Érték                                              |
+| ----------- | -------------------------------------------------- |
+| DB_USER     | adatgazda                                          |
+| DB_PASSWORD | {jelszó amit az adatbázis felhasználóhoz megadtál} |
+| DB_SERVER   | {RDS endpoint}                                     |
+| DB_NAME     | cikkek                                             |
+| DB_PORT     | 3306                                               |
+
+8. Kattintsunk a "Apply" gombra
+
+Pár perc múlva életbe lépnek a változtatások.
+
+### CodePipeline konfigurálása a folyamatos üzembehelyezéshez
+
+Végül CodePipeline segítségével töltsd fel a saját alkalmazásodat:
 
 1. Keresőbe írjuk be a CodePipeline szolgáltatást
 2. Kattintsunk a "Create pipeline" gombra
+3. Töltsük ki a kötelező mezőket
+   - Pipeline name: cikkek-pipeline
+   - Pipeline type: V1
+   - Execution mode: Suspended
+   - Service role: New service role
+   - Role name: cikkek-pipeline-role
+4. Kattintsunk a "Next" gombra
+5. Source provider: GitHub (Version 2)
+   - Repository: {GitHub repository link}
+   - Branch: main
+6. Kattintsunk a "Next" gombra
+7. Build provider: Skip build stage
+8. Deployment provider: Elastic Beanstalk
+   - Application name: cikkek
+   - Environment name: cikkek-env
+9. Kattintsunk a "Create pipeline" gombra
+
+Amikor elkészült a pipeline, a GitHub repository-ba feltöltött változások automatikusan frissítik az alkalmazást az Elastic Beanstalk környezetben.
+
+Pár perc múlva a [http://cikkek.eu-central-1.elasticbeanstalk.com/](http://cikkek.eu-central-1.elasticbeanstalk.com/) címen elérhető lesz az alkalmazás.
