@@ -67,3 +67,49 @@ CREATE TABLE posts (
     FOREIGN KEY (userId) REFERENCES users(id)
 );
 ```
+
+## Alkalmazás helyi futtatása
+
+1. Klónozd le a projektet
+2. Telepítsd a szükséges csomagokat: `npm install`
+3. Hozz létre egy `.env` fájlt a projekt gyökérkönyvtárában a következő tartalommal:
+
+```
+# .env file
+DB_USER="admin"
+DB_PASSWORD={RDS jelszava}
+DB_SERVER={RDS endpoint}
+DB_NAME="cikkek"
+DB_PORT="3306"
+```
+
+4. Indítsd el az alkalmazást: `npm start`
+5. Nyisd meg a böngészőt, és látogasd meg a `http://localhost:8080` címet
+
+
+## Alkalmazás futtatása Elastic Beanstalk segítségével
+
+1. Lépjünk be az AWS konzolba
+2. Keresőbe írjuk be az Elastic Beanstalk szolgáltatást
+3. Kattintsunk a "Create environment" gombra
+4. Töltsük ki a kötelező mezőket
+   - Application name: cikkek
+   - Environment name: cikkek-env
+   - Domain (opcionális): cikkek
+   - Platform: Node.js
+   - Platform branch: Node.js 20
+   - Application code: Sample application
+   - Presets: Single instance
+5. Kattintsunk a "Next" gombra
+6. Create and use new service role
+    - Service role name: cikkek-role
+7. EC2 key pair: Create new key pair
+    - Key pair name: cikkek-key
+8. Kattintsunk a "Next" gombra
+9. Kattintsunk a "Skip to review" gombra
+10. Kattintsunk a "Submit" gombra
+
+Ha létrejött a példa alkalmazás, CodePipeline segítségével töltsd fel a saját alkalmazásodat.
+
+1. Keresőbe írjuk be a CodePipeline szolgáltatást
+2. Kattintsunk a "Create pipeline" gombra
