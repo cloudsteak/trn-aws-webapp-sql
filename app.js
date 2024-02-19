@@ -11,8 +11,6 @@ const password = process.env.DB_PASSWORD
 const database = process.env.DB_NAME;
 const port = parseInt(process.env.DB_PORT);
 
-
-
 // Initialize express app
 const app = express();
 
@@ -39,12 +37,12 @@ app.get('/', (req, res) => {
 
     pool.query(usersQuery, (error, users) => {
         if (error) {
-            return res.status(500).send('Error fetching users');
+            return res.status(500).send('Hiba történt a szerzők beolvasásakor');
         }
 
         pool.query(postsQuery, (error, posts) => {
             if (error) {
-                return res.status(500).send('Error fetching posts');
+                return res.status(500).send('Hiba történt acikkek beolvasásakor');
             }
             res.render('index', { users, posts });
         });
@@ -55,28 +53,29 @@ app.get('/', (req, res) => {
 app.post('/add-post', (req, res) => {
     const { userId, title, content } = req.body;
     const query = 'INSERT INTO posts (userId, title, content) VALUES (?, ?, ?)';
-    
+
     pool.query(query, [userId, title, content], (error, results) => {
         if (error) {
             console.log(error);
-            return res.status(500).send('Error adding the post');
+            return res.status(500).send('Hiba történt a cikk hozzáadásakor');
         }
         res.redirect('/');
     });
 });
 
+// New user: GET
 app.get('/add-user', (req, res) => {
     res.render('add-user');
 });
 
-// New User
+// New User: POST
 app.post('/add-user', (req, res) => {
     const { name } = req.body;
     const query = 'INSERT INTO users (name) VALUES (?)';
-    
+
     pool.query(query, [name], (error, results) => {
         if (error) {
-            return res.status(500).send('Error adding the user');
+            return res.status(500).send('Hiba történt a szerző hozzáadásakor');
         }
         res.redirect('/');
     });
