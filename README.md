@@ -101,6 +101,24 @@ DB_PORT="3306"
 
 ## Alkalmazás futtatása Elastic Beanstalk segítségével
 
+### EC2 instance profile létrehozása
+
+Elastic Beanstalk környezet létrehozásához szükségünk lesz egy EC2 instance profile-ra, amely engedélyezi az EC2 példányoknak a megfelelő hozzáférését.
+
+1. Lépjünk be az AWS konzolba
+2. Keresőbe írjuk be az IAM szolgáltatást
+3. A bal oldali menüben kattintsunk az "Roles" menüpontra
+4. A `Trusted entity type` lehetőségek közül válasszuk ki az `AWS service` opciót
+5. A `Choose a use case` lehetőségek közül válasszuk ki az `EC2` opciót
+6. Kattintsunk a "Next" gombra
+7. Adjuk hozzá a következő engedélyeket:
+   - AWSElasticBeanstalkWebTier
+   - AWSElasticBeanstalkWorkerTier
+   - AWSElasticBeanstalkMulticontainerDocker
+8. Kattintsunk a "Next" gombra
+9. Role name: webalkalmazas-role
+10. Kattintsunk a "Create role" gombra
+
 ### Elastic Beanstalk környezet létrehozása
 
 1. Lépjünk be az AWS konzolba
@@ -119,9 +137,11 @@ DB_PORT="3306"
    - Service role name: cikkek-role
 7. EC2 key pair: Create new key pair
    - Key pair name: cikkek-key
-8. Kattintsunk a "Next" gombra
-9. Kattintsunk a "Skip to review" gombra
-10. Kattintsunk a "Submit" gombra
+8. EC2 instance profile: 
+   - Instance profile name: webalkalmazas-role
+9. Kattintsunk a "Next" gombra
+10. Kattintsunk a "Skip to review" gombra
+11. Kattintsunk a "Submit" gombra
 
 Ha létrejött a példa alkalmazás, adjuk hozzá az alkalmazás számára szükséges adatbázis hozzásférési paramétereket
 
